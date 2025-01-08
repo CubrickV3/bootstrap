@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +13,13 @@ import java.util.Set;
 @Component
 public class CreateDemoUsers {
 
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+
     @Autowired
-    public CreateDemoUsers(RoleRepository roleRepository, UserRepository userRepository) {
-        this.roleRepository = roleRepository;
+    public CreateDemoUsers(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Transactional
     public void createDemoUsers() {
         Set<Role> roleAdmin = new HashSet<>();
