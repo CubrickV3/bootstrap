@@ -42,6 +42,14 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public User(String username, String email, String password, String passwordConfirm, Set<Role> roles) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.passwordConfirm = passwordConfirm;
+        this.roles = roles;
+    }
+
     public long getId() {
         return id;
     }
@@ -66,7 +74,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Collection<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
