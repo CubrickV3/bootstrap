@@ -17,13 +17,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "username", unique = true, nullable = false)
-    @Size(min = 2, message = "Не меньше 5 символов")
     private String username;
     @Column(name = "email")
-    @Size(min = 2, message = "Не меньше 5 символов")
     private String email;
     @Column(name = "password")
-    @Size(min = 8, message = "Не меньше 8 символов")
     private String password;
     @Transient
     private String passwordConfirm;

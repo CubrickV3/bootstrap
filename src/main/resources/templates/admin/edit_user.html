@@ -15,6 +15,12 @@
   <label for="password">Edit password: </label>
   <input type="text" th:field="*{password}" id="password">
   <br/>
+  <label for="roles">Role</label>
+  <select name="role" multiple id="roles" style="height: 40px;">
+    <option value="1">USER</option>
+    <option value="2">ADMIN</option>
+  </select>
+  <br/>
   <input type="submit" value="Update!"/>
 </form>
 <a href="/logout">Logout</a>

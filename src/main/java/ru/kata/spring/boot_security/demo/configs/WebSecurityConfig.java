@@ -8,16 +8,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.CreateDemoUsers;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImp;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final UserServiceImp userService;
     private final SuccessUserHandler successUserHandler;
     private final CreateDemoUsers createDemoUsers;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService, CreateDemoUsers createDemoUsers) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserServiceImp userService, CreateDemoUsers createDemoUsers) {
         this.successUserHandler = successUserHandler;
         this.userService = userService;
         this.createDemoUsers = createDemoUsers;

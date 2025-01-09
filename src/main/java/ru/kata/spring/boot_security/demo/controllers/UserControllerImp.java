@@ -12,7 +12,7 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("/user")
-public class UserControllerImp implements UserController {
+public class UserControllerImp {
 
     private UserRepository userRepository;
 
@@ -21,7 +21,6 @@ public class UserControllerImp implements UserController {
         this.userRepository = userRepository;
     }
 
-    @Override
     @GetMapping
     public String userProfile(Principal principal, Model model) {
         User user = userRepository.findByUsername(principal.getName());
