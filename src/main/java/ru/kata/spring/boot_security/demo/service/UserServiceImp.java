@@ -67,11 +67,14 @@ public class UserServiceImp implements UserDetailsService, UserService {
     @Override
     public boolean editUser(@ModelAttribute("user") User user,
                             @RequestParam(value = "role") Set<Role> roles) {
-        if (userRepository.findByUsername(user.getUsername()) == null) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            user.setRoles(roles);
             User editUser = userRepository.findById(user.getId()).orElse(null);
             editUser.setUsername(user.getUsername());
+            editUser.setLastName(user.getLastName());
+            editUser.setAge(user.getAge());
             editUser.setEmail(user.getEmail());
-            editUser.setRoles(roles);
+            editUser.setRoles(user.getRoles());
             editUser.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(editUser);
             return true;

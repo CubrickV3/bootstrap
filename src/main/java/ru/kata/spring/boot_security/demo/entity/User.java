@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -15,8 +16,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true, nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String username;
+    @Column(name = "last_name")
+    private String lastName;
+
+    private byte age;
 
     private String email;
 
@@ -58,6 +63,22 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public byte getAge() {
+        return age;
+    }
+
+    public void setAge(byte age) {
+        this.age = age;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -72,6 +93,20 @@ public class User implements UserDetails {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public String getAllUserRoles() {
+        return roles.stream()
+                .map(role -> {
+                    if (role.getRoleName().equals("ROLE_USER")) {
+                        return "USER";
+                    } else if (role.getRoleName().equals("ROLE_ADMIN")) {
+                        return "ADMIN";
+                    } else {
+                        return role.getRoleName();
+                    }
+                })
+                .collect(Collectors.joining(", "));
     }
 
     public void setRoles(Set<Role> roles) {
