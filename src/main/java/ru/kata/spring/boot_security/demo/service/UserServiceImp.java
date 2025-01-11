@@ -7,28 +7,84 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements UserDetailsService, UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     @Lazy
-    public UserServiceImp(UserRepository userRepository) {
+    public UserServiceImp(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users;
+    }
+
+    @Override
+    public boolean createUser(@ModelAttribute User user, @RequestParam(value = "role") Set<Role> roles) {
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            user.setRoles(roles);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public User getEditUserPage(@PathVariable Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return user;
+    }
+
+    @Override
+    public boolean editUser(@ModelAttribute("user") User user,
+                            @RequestParam(value = "role") Set<Role> roles) {
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            User editUser = userRepository.findById(user.getId()).orElse(null);
+            editUser.setUsername(user.getUsername());
+            editUser.setEmail(user.getEmail());
+            editUser.setRoles(roles);
+            editUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(editUser);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        user.setRoles(null);
+        userRepository.delete(user);
     }
 
     @Override
