@@ -26,7 +26,7 @@ public interface UserService {
     boolean editUser(@ModelAttribute("user") User user,
                      @RequestParam(value = "role") Set<Role> roles);
 
-    void deleteUser(@PathVariable Long id);
+    boolean deleteUser(@PathVariable Long id);
 
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 

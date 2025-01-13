@@ -26,10 +26,12 @@ public class CreateDemoUsers {
         Set<Role> roleUser = new HashSet<>();
         roleAdmin.add(new Role("ROLE_ADMIN"));
         roleUser.add(new Role("ROLE_USER"));
-        User admin = new User("admin", "admin@mail.com",
-                "$2y$10$yiInRFChgGpPRJlpWh21pONMAhrC39BiiDWwDEWOWuujsB5uBu/8W");
-        User user = new User("user", "user@mail.com",
-                "$2y$10$246J.d9ntA8E60YVAVN3bec2XggxkFLuVI.v3yarsbsLo2QBppJcC");
+        User admin = new User("admin","adm Sec-name", (byte) 20,
+                "$2y$10$yiInRFChgGpPRJlpWh21pONMAhrC39BiiDWwDEWOWuujsB5uBu/8W",
+                "admin@mail.com");
+        User user = new User("user", "user Sec-name", (byte) 20,
+                "$2y$10$246J.d9ntA8E60YVAVN3bec2XggxkFLuVI.v3yarsbsLo2QBppJcC",
+                "user@mail.com");
 
         admin.setRoles(roleAdmin);
         user.setRoles(roleUser);

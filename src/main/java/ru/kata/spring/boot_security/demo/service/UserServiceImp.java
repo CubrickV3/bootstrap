@@ -75,7 +75,9 @@ public class UserServiceImp implements UserDetailsService, UserService {
             editUser.setAge(user.getAge());
             editUser.setEmail(user.getEmail());
             editUser.setRoles(user.getRoles());
-            editUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (user.getPassword() != null) {
+                editUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
             userRepository.save(editUser);
             return true;
         } else {
@@ -84,10 +86,11 @@ public class UserServiceImp implements UserDetailsService, UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public boolean deleteUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         user.setRoles(null);
         userRepository.delete(user);
+        return user.getRoles().isEmpty();
     }
 
     @Override
