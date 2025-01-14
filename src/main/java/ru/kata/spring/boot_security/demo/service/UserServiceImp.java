@@ -36,11 +36,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public User findByEmail(String email) {
+    public User findByUsername(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -52,7 +48,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
 
     @Override
     public boolean createUser(@ModelAttribute User user, @RequestParam(value = "role") Set<Role> roles) {
-        if (userRepository.findByEmail(user.getEmail()) == null) {
+        if (userRepository.findByUsername(user.getEmail()) == null) {
             user.setRoles(roles);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
@@ -70,7 +66,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
 
     @Override
     public boolean editUser(@ModelAttribute("user") User user) {
-        if (userRepository.findByEmail(user.getEmail()) == null) {
+        if (userRepository.findByUsername(user.getEmail()) == null) {
             User editUser = userRepository.findById(user.getId()).orElse(null);
             editUser.setUsername(user.getUsername());
             editUser.setLastName(user.getLastName());
@@ -100,7 +96,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = findByEmail(email);
+        User user = findByUsername(email);
         if (user == null) {
             throw new UsernameNotFoundException(email);
         }
