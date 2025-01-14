@@ -40,6 +40,10 @@ public class UserServiceImp implements UserDetailsService, UserService {
         return userRepository.findByUsername(username);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     @Override
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -48,7 +52,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
 
     @Override
     public boolean createUser(@ModelAttribute User user, @RequestParam(value = "role") Set<Role> roles) {
-        if (userRepository.findByUsername(user.getUsername()) == null) {
+        if (userRepository.findByEmail(user.getEmail()) == null) {
             user.setRoles(roles);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
@@ -65,10 +69,8 @@ public class UserServiceImp implements UserDetailsService, UserService {
     }
 
     @Override
-    public boolean editUser(@ModelAttribute("user") User user,
-                            @RequestParam(value = "role") Set<Role> roles) {
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            user.setRoles(roles);
+    public boolean editUser(@ModelAttribute("user") User user) {
+        if (userRepository.findByEmail(user.getEmail()) == null) {
             User editUser = userRepository.findById(user.getId()).orElse(null);
             editUser.setUsername(user.getUsername());
             editUser.setLastName(user.getLastName());
@@ -87,20 +89,22 @@ public class UserServiceImp implements UserDetailsService, UserService {
 
     @Override
     public boolean deleteUser(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        user.setRoles(null);
-        userRepository.delete(user);
-        return user.getRoles().isEmpty();
+        return userRepository.findById(id)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return true;
+                })
+                .orElse(false);
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(email);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthorities(user.getRoles()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthorities(user.getRoles()));
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {

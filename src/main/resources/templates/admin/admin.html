@@ -141,7 +141,7 @@
 									<td>
 										<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#userEdit"
 														th:data-bs-id="${user.id}"
-														th:data-bs-firstName="${user.username}"
+														th:data-bs-username="${user.username}"
 														th:data-bs-lastName="${user.lastName}"
 														th:data-bs-age="${user.age}"
 														th:data-bs-email="${user.email}"
@@ -152,7 +152,7 @@
 									<td>
 										<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#userDelete"
 														th:data-bs-id="${user.id}"
-														th:data-bs-firstName="${user.username}"
+														th:data-bs-username="${user.username}"
 														th:data-bs-lastName="${user.lastName}"
 														th:data-bs-age="${user.age}"
 														th:data-bs-email="${user.email}"
@@ -268,7 +268,7 @@
 						<label class="col-form-label mt-3 mb-0" for="editId"><strong>ID</strong></label>
 						<input class="form-control" id="editId" type="text" placeholder="ID" name="id" disabled>
 						<label class="form-label mt-3 mb-0" for="editFirstName"><strong>First name</strong></label>
-						<input class="form-control" id="editFirstName" type="text" name="firstName">
+						<input class="form-control" id="editFirstName" type="text" name="username">
 						<label class="form-label mt-3 mb-0" for="editLastName"><strong>Last name</strong></label>
 						<input class="form-control" id="editLastName" type="text" name="lastName">
 						<label class="form-label mt-3 mb-0" for="editAge"><strong>Age</strong></label>
@@ -278,9 +278,8 @@
 						<label class="form-label mt-3 mb-0" for="editPassword"><strong>Password</strong></label>
 						<input class="form-control" id="editPassword" type="password" name="rawPassword">
 						<label class="form-label mt-3 mb-0" for="editRoles"><strong>Role</strong></label>
-						<select class="form-select" size="2" id="editRoles" name="roles" multiple required>
-							<option value="1">USER</option>
-							<option value="2">ADMIN</option>
+						<select class="form-select" id="editRoles" name="roles" multiple th:size="${#sets.size(allRoles)}" required>
+							<option th:each="role: ${allRoles}" th:value="${role.id}" th:text="${#strings.substringAfter(role.roleName, 'ROLE_')}"></option>
 						</select>
 					</form>
 				</div>
@@ -310,7 +309,7 @@
 						<label class="col-form-label mt-3 mb-0" for="deleteId"><strong>ID</strong></label>
 						<input class="form-control" id="deleteId" type="text" placeholder="ID" name="id" disabled>
 						<label class="form-label mt-3 mb-0" for="deleteFirstName"><strong>First name</strong></label>
-						<input class="form-control" id="deleteFirstName" type="text" name="firstName" disabled>
+						<input class="form-control" id="deleteFirstName" type="text" name="username" disabled>
 						<label class="form-label mt-3 mb-0" for="deleteLastName"><strong>Last name</strong></label>
 						<input class="form-control" id="deleteLastName" type="text" name="lastName" disabled>
 						<label class="form-label mt-3 mb-0" for="deleteAge"><strong>Age</strong></label>
@@ -318,9 +317,8 @@
 						<label class="form-label mt-3 mb-0" for="deleteEmail"><strong>Email</strong></label>
 						<input class="form-control" id="deleteEmail" type="email" name="email" disabled>
 						<label class="form-label mt-3 mb-0" for="deleteRoles"><strong>Role</strong></label>
-						<select class="form-select" size="2" id="deleteRoles" name="roles" multiple disabled>
-							<option value="1">USER</option>
-							<option value="2">ADMIN</option>
+						<select class="form-select" id="deleteRoles" name="roles" multiple th:size="${#sets.size(allRoles)}" disabled>
+							<option th:each="role: ${allRoles}" th:value="${role.id}" th:text="${#strings.substringAfter(role.roleName, 'ROLE_')}"></option>
 						</select>
 					</form>
 				</div>
@@ -340,9 +338,9 @@
     userEdit.addEventListener('show.bs.modal', event => {
         const button = event.relatedTarget
         const editId = button.getAttribute('data-bs-id')
-        userEdit.querySelector('.modal-body form').action = '/admin' + editId
+        userEdit.querySelector('.modal-body form').action = '/admin/admin/' + editId
         userEdit.querySelector('.modal-body input[id="editId"]').value = button.getAttribute('data-bs-id')
-        userEdit.querySelector('.modal-body input[id="editFirstName"]').value = button.getAttribute('data-bs-firstName')
+        userEdit.querySelector('.modal-body input[id="editFirstName"]').value = button.getAttribute('data-bs-username')
         userEdit.querySelector('.modal-body input[id="editLastName"]').value = button.getAttribute('data-bs-lastName')
         userEdit.querySelector('.modal-body input[id="editAge"]').value = button.getAttribute('data-bs-age')
         userEdit.querySelector('.modal-body input[id="editEmail"]').value = button.getAttribute('data-bs-email')
@@ -371,15 +369,26 @@
 <script>
     const userDelete = document.getElementById('userDelete')
 
-    userDelete.addEventListener('show.bs.mo	dal', event => {
+    userDelete.addEventListener('show.bs.modal', event => {
         const button = event.relatedTarget
         const deleteId = button.getAttribute('data-bs-id')
-        userDelete.querySelector('.modal-body form').action = '/admin/' + deleteId
+        userDelete.querySelector('.modal-body form').action = '/admin/admin/' + deleteId
         userDelete.querySelector('.modal-body input[id="deleteId"]').value = button.getAttribute('data-bs-id')
-        userDelete.querySelector('.modal-body input[id="deleteFirstName"]').value = button.getAttribute('data-bs-firsName')
+        userDelete.querySelector('.modal-body input[id="deleteFirstName"]').value = button.getAttribute('data-bs-username')
         userDelete.querySelector('.modal-body input[id="deleteLastName"]').value = button.getAttribute('data-bs-lastName')
         userDelete.querySelector('.modal-body input[id="deleteAge"]').value = button.getAttribute('data-bs-age')
         userDelete.querySelector('.modal-body input[id="deleteEmail"]').value = button.getAttribute('data-bs-email')
+
+        const optionsRole = userDelete.querySelector('.modal-body select').getElementsByTagName('option');
+        let arrRoleId = button.getAttribute('data-bs-roles').matchAll(/id=\d+/g)
+        for (const strId of arrRoleId) {
+            let optId = strId.toString().slice(3)
+            for (let i = 0; i < optionsRole.length; i++) {
+                if (optionsRole[i].value === optId) {
+                    optionsRole[i].selected = true
+                }
+            }
+        }
     })
 
     // Отчистка выбранных ролей после закрытия окна userDelete

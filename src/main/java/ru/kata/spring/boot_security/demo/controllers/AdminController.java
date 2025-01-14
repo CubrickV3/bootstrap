@@ -1,13 +1,12 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
@@ -18,16 +17,19 @@ import java.util.Set;
 public class AdminController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
-    public String usersListPage(Principal principal,Model model) {
+    public String usersListPage(Principal principal, Model model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("newUser", new User());
         return "admin/admin";
     }
@@ -41,20 +43,13 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/{id}")
-    public String editUser(@PathVariable Long id, Model model) {
-        model.addAttribute("editUser", userService.getEditUserPage(id));
-        return "admin/edit_user";
-    }
-
-    @PutMapping("/{id}")
-    public String editUser(@ModelAttribute("user") User user,
-                           @RequestParam(value = "role") Set<Role> roles) {
-        userService.editUser(user, roles);
+    @PutMapping("admin/{id}")
+    public String editUser(@ModelAttribute("user") User user) {
+        userService.editUser(user);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("admin/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";

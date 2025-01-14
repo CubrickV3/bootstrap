@@ -23,8 +23,7 @@ public interface UserService {
 
     User getEditUserPage(@PathVariable Long id);
 
-    boolean editUser(@ModelAttribute("user") User user,
-                     @RequestParam(value = "role") Set<Role> roles);
+    boolean editUser(@ModelAttribute("user") User user);
 
     boolean deleteUser(@PathVariable Long id);
 
