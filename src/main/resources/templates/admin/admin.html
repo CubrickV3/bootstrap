@@ -176,31 +176,31 @@
 						</div>
 						<div class="d-flex justify-content-center border" style="padding-top: 15px;">
 							<form th:method="POST" th:action="@{/admin}" th:object="${newUser}" class="col-md-3"
-										style="text-align: center;">
+										style="text-align: center;" required>
 								<div class="mb-3">
 									<label for="first_name" class="form-label fw-bold">First name</label>
 									<input type="text" th:field="*{username}" class="form-control" id="first_name"
-												 placeholder="First name">
+												 placeholder="First name" required>
 								</div>
 								<div class="mb-3">
 									<label for="last_name" class="form-label fw-bold">Last name</label>
-									<input type="text" th:field="*{lastName}" class="form-control" id="last_name" placeholder="Last name">
+									<input type="text" th:field="*{lastName}" class="form-control" id="last_name" placeholder="Last name" required>
 								</div>
 								<div class="mb-3">
 									<label for="age" class="form-label fw-bold">Age</label>
-									<input type="text" th:field="*{age}" class="form-control" id="age" placeholder="Age">
+									<input type="text" th:field="*{age}" class="form-control" id="age" placeholder="Age" required>
 								</div>
 								<div class="mb-3">
 									<label for="email" class="form-label fw-bold">Email</label>
-									<input type="email" th:field="*{email}" class="form-control" id="email" placeholder="Email">
+									<input type="email" th:field="*{email}" class="form-control" id="email" placeholder="Email" required>
 								</div>
 								<div class="mb-3">
 									<label for="password" class="form-label fw-bold">Password</label>
-									<input type="text" th:field="*{password}" class="form-control" id="password" placeholder="Password">
+									<input type="text" th:field="*{password}" class="form-control" id="password" placeholder="Password" required>
 								</div>
 								<label for="roles" class="fw-bold">Role</label>
 								<select class="form-select" id="roles" name="role" size="2" multiple
-												aria-label="multiple select example">
+												aria-label="multiple select example" required>
 									<option value="1">ADMIN</option>
 									<option value="2">USER</option>
 								</select>
@@ -268,11 +268,11 @@
 						<label class="col-form-label mt-3 mb-0" for="editId"><strong>ID</strong></label>
 						<input class="form-control" id="editId" type="text" placeholder="ID" name="id" disabled>
 						<label class="form-label mt-3 mb-0" for="editFirstName"><strong>First name</strong></label>
-						<input class="form-control" id="editFirstName" type="text" name="username">
+						<input class="form-control" id="editFirstName" type="text" name="username" required>
 						<label class="form-label mt-3 mb-0" for="editLastName"><strong>Last name</strong></label>
-						<input class="form-control" id="editLastName" type="text" name="lastName">
+						<input class="form-control" id="editLastName" type="text" name="lastName" required>
 						<label class="form-label mt-3 mb-0" for="editAge"><strong>Age</strong></label>
-						<input class="form-control" id="editAge" type="number" name="age">
+						<input class="form-control" id="editAge" type="number" name="age" required>
 						<label class="form-label mt-3 mb-0" for="editEmail"><strong>Email</strong></label>
 						<input class="form-control" id="editEmail" type="email" name="email" required>
 						<label class="form-label mt-3 mb-0" for="editPassword"><strong>Password</strong></label>

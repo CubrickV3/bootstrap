@@ -87,6 +87,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
     public boolean deleteUser(Long id) {
         return userRepository.findById(id)
                 .map(user -> {
+                    user.setRoles(null);
                     userRepository.delete(user);
                     return true;
                 })
